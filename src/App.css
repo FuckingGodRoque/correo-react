@@ -126,6 +126,29 @@ body {
   font-size: 1.1rem;
 }
 
+.sent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sent-item {
+  background: #f6f7fb;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px #e0e0e0;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  font-size: 1rem;
+  color: #222;
+}
+
+.sent-date {
+  color: #888;
+  font-size: 0.95em;
+  margin-top: 8px;
+  text-align: right;
+}
+
 .App {
   text-align: center;
 }

@@ -4,7 +4,6 @@ import './App.css';
 function Sidebar({ onSelect, selected }) {
   return (
     <nav className="sidebar">
-      <button className={selected === 'inbox' ? 'active' : ''} onClick={() => onSelect('inbox')}>Bandeja de entrada</button>
       <button className={selected === 'sent' ? 'active' : ''} onClick={() => onSelect('sent')}>Enviados</button>
       <button className={selected === 'compose' ? 'active' : ''} onClick={() => onSelect('compose')}>Redactar</button>
     </nav>
@@ -25,15 +24,11 @@ function ComposeMail({ onSend }) {
     setError('');
     setSent(false);
     try {
-      const res = await fetch('http://localhost:3001/api/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to, subject, message })
-      });
-      if (!res.ok) throw new Error('Error al enviar el correo');
+      // Simular envío y guardar en enviados
+      await new Promise(res => setTimeout(res, 500));
       setSent(true);
+      if (onSend) onSend({ to, subject, message, date: new Date().toLocaleString() });
       setTo(''); setSubject(''); setMessage('');
-      if (onSend) onSend();
     } catch (err) {
       setError('Error al enviar el correo');
     }
@@ -55,32 +50,35 @@ function ComposeMail({ onSend }) {
   );
 }
 
-function Inbox() {
-  return (
-    <div className="inbox">
-      <h2>Bandeja de entrada</h2>
-      <div className="empty-msg">No hay correos</div>
-    </div>
-  );
-}
-
-function Sent() {
+function Sent({ sentMails }) {
   return (
     <div className="sent">
       <h2>Enviados</h2>
-      <div className="empty-msg">No hay correos enviados</div>
+      {sentMails.length === 0 ? (
+        <div className="empty-msg">No hay correos enviados</div>
+      ) : (
+        <ul className="sent-list">
+          {sentMails.map((mail, idx) => (
+            <li key={idx} className="sent-item">
+              <div><b>Para:</b> {mail.to}</div>
+              <div><b>Asunto:</b> {mail.subject}</div>
+              <div><b>Mensaje:</b> {mail.message}</div>
+              <div className="sent-date">{mail.date}</div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
 function App() {
-  const [view, setView] = useState('inbox');
-  const [refreshSent, setRefreshSent] = useState(false);
+  const [view, setView] = useState('sent');
+  const [sentMails, setSentMails] = useState([]);
 
   let content;
-  if (view === 'inbox') content = <Inbox />;
-  else if (view === 'sent') content = <Sent key={refreshSent} />;
-  else content = <ComposeMail onSend={() => { setView('sent'); setRefreshSent(r => !r); }} />;
+  if (view === 'sent') content = <Sent sentMails={sentMails} />;
+  else content = <ComposeMail onSend={mail => { setSentMails([mail, ...sentMails]); setView('sent'); }} />;
 
   return (
     <div className="samsung-mail-app">
