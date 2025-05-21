@@ -4,8 +4,8 @@ import './App.css';
 function Sidebar({ onSelect, selected }) {
   return (
     <nav className="sidebar">
-      <button className={selected === 'sent' ? 'active' : ''} onClick={() => onSelect('sent')}>Enviados</button>
       <button className={selected === 'compose' ? 'active' : ''} onClick={() => onSelect('compose')}>Redactar</button>
+      <button className={selected === 'sent' ? 'active' : ''} onClick={() => onSelect('sent')}>Enviados</button>
     </nav>
   );
 }
